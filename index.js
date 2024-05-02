@@ -1,23 +1,28 @@
 const express = require("express");
-
 const mongoose = require("mongoose");
-const app = express();
 require("dotenv").config();
+const cors = require("cors");
 
+const app = express();
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log("server is running on port ", PORT);
+
+app.use(cors());
+app.use(express.json());
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_API);
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "MongoDB connection error:"));
+db.once("open", () => {
+  console.log("Connected to MongoDB");
 });
 
-app.get("/", (req, res) => {
-  res.send("Backend is connected");
-});
-
-const userShema = new mongoose.Schema({
-  userId: {
+const userSchema = new mongoose.Schema({
+  clerk_id: {
     type: String,
     unique: true,
     required: true,
+    alias: "id",
   },
   fullName: {
     type: String,
@@ -25,7 +30,7 @@ const userShema = new mongoose.Schema({
   },
   lastName: {
     type: String,
-    requried: true,
+    required: true, // Corrected typo
   },
   username: {
     type: String,
@@ -37,15 +42,22 @@ const userShema = new mongoose.Schema({
     required: true,
   },
 });
-const User = mongoose.model("User", userShema);
 
-app.post("/createUser", async (req, res) => {});
-try {
-  mongoose.connect(process.env.MONGODB_API).then(() => {
-    console.log("Connected to the database!");
-  });
-} catch (error) {
-  console.log(error);
-}
+const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+app.post("/user", async (req, res) => {
+  try {
+    const userData = req.body;
+    const newUser = new User(userData);
+    await newUser.save();
+    console.log("User data saved to MongoDB:", newUser);
+    res.status(200).json({ message: "User data saved successfully" });
+  } catch (error) {
+    console.error("Error saving user data to MongoDB:", error);
+    res.status(500).json({ error: "Failed to save user data" });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
