@@ -32,33 +32,14 @@ const userShema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  primaryEmailAddress: {
-    imageUrl: String,
-    lastSignInAt: Date,
-    createdAt: {
-      type: Date,
-      default: Date.now(),
-    },
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now(),
-  },
-  publicMetadata: {
-    type: Object,
-    default: {},
-  },
-  verifiedEmailAddress: {
-    type: Boolean,
-    default: false,
-  },
-  verifiedPhoneNumber: {
-    type: Boolean,
-    default: false,
+  imageUrl: {
+    type: String,
+    required: true,
   },
 });
 const User = mongoose.model("User", userShema);
 
+app.post("/createUser", async (req, res) => {});
 try {
   mongoose.connect(process.env.MONGODB_API).then(() => {
     console.log("Connected to the database!");
