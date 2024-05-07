@@ -1,4 +1,4 @@
-RRconst express = require("express");
+const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const cors = require("cors");
@@ -66,16 +66,17 @@ app.get("/dashboard", (req, res) => {
   res.send("Welcome to the dashboard!");
 });
 
-app.post("/dashboard/create-job", async (req, res) => {
+app.post("/dashboard/create-job", (req, res) => {
   try {
     const jobData = req.body;
-    console.log("New job created:", jobData);
-    res.status(200).json({ message: "Job created successfully" });
+    res.status(200).json({ message: "Job created successfully", jobData });
+    console.log(jobData);
   } catch (error) {
-    console.error("Error creating job:", error);
-    res.status(500).json({ error: "Failed to create job" });
+    console.error(error);
+    res.status(500).json({ message: "Failed to create job" });
   }
 });
+
 app.put("/user/:id", async (req, res) => {
   try {
     const { id } = req.params;
