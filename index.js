@@ -77,6 +77,16 @@ app.post("/dashboard/create-job", (req, res) => {
   }
 });
 
+app.post("/dashboard/create-job/des", (req, res) => {
+  try {
+    const desData = req.body;
+    console.log(desData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to create job" });
+  }
+});
+
 app.put("/user/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -89,6 +99,15 @@ app.put("/user/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to update user data" });
   }
 });
+
+app.get("/users:id", (req, res) => {
+  try {
+    console.log(users.id);
+    console.log(users.details);
+    res.status(200).json({ message: "user fetched successfully", users });
+  } catch (error) {}
+});
+
 app.get("/user/:id", async (req, res) => {
   try {
     const { id } = req.params;
